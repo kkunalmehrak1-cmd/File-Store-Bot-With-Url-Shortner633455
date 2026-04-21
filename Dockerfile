@@ -1,37 +1,18 @@
-# Don't Remove Credit Tg - @VJ_Bots
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+FROM python:3.11-slim
 
-FROM ubuntu:18.04
+WORKDIR /app
 
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update
-RUN echo y | apt-get install locales
-RUN echo y | apt install build-essential
-RUN apt -qq install -y --no-install-recommends \
-    curl \
-    git \
-    gnupg2 \
-    wget \
-
-RUN set -ex; \
-    apt-get update \
-    && apt-get install -y --no-install-recommends \
-        busybox \
-	git \
-	python3 \
-	python3-dev \
-	python3-pip \
-	python3-lxml \
-	pv \
-	&& apt-get autoclean \
-        && apt-get autoremove \
-        && rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install setuptools wheel yarl multidict
 COPY requirements.txt .
-RUN pip3 install -r requirements.txt
-RUN dpkg-reconfigure locales
-COPY . /app
 
-CMD ["python3", "bot.py"]
+# Dependencies for building some packages
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python3", "bot.py"]   # ya jo bhi tumhara main file hai (bot.py / main.py / index.py)
